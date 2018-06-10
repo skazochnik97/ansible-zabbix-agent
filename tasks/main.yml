@@ -223,6 +223,12 @@
     inventory_mode: "{{ zabbix_inventory_mode }}"
     interfaces: "{{ zabbix_agent_interfaces }}"
     visible_name: "{{ zabbix_visible_hostname|default(zabbix_agent_hostname) }}"
+    tls_accept: "{{ {'unencrypted': '1', 'psk': '2', 'cert' : '4'}[zabbix_agent_tlsaccept] | default('1') }}"
+    tls_connect: "{{ {'unencrypted': '1', 'psk': '2', 'cert' : '4'}[zabbix_agent_tlsconnect] | default('1') }}"
+    tls_psk_identity: "{{ zabbix_agent_tlspskidentity if (zabbix_agent_tlsaccept == 'psk') else '' }}"
+    tls_psk: "{{ zabbix_agent_tlspsk_secret if (zabbix_agent_tlsaccept == 'psk') else '' }}"
+    tls_issuer: "{{ zabbix_agent_tlsservercertissuer if (zabbix_agent_tlsaccept == 'cert') else '' }}"
+    tls_subject: "{{ zabbix_agent_tlsservercertsubject if (zabbix_agent_tlsaccept == 'cert') else '' }}"
   when:
     - zabbix_api_create_hosts
   become: no
